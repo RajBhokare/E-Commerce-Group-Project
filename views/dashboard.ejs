@@ -1,0 +1,148 @@
+<%- include('partials/header', { showNav: true, title: 'Dashboard · RiskMonitor', user }) %>
+
+<div class="dashboard-wrapper">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Threat Overview</h2>
+      <p class="page-sub">Live monitoring · Updated just now</p>
+    </div>
+    <div class="header-actions">
+      <span class="badge-live"><span class="pulse"></span> Live</span>
+      <button class="btn-refresh" onclick="location.reload()">
+        <i class="bi bi-arrow-clockwise"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stats-grid">
+
+    <div class="stat-card stat-blue">
+      <div class="stat-icon"><i class="bi bi-credit-card-2-front"></i></div>
+      <div class="stat-body">
+        <span class="stat-label">Total Transactions</span>
+        <span class="stat-value"><%= totalTransactions %></span>
+        <span class="stat-delta positive"><i class="bi bi-arrow-up-short"></i>12.4% this month</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-red">
+      <div class="stat-icon"><i class="bi bi-bug"></i></div>
+      <div class="stat-body">
+        <span class="stat-label">Fraud Detected</span>
+        <span class="stat-value"><%= fraudDetected %></span>
+        <span class="stat-delta negative"><i class="bi bi-arrow-up-short"></i>3.8% vs last month</span>
+      </div>
+    </div>
+
+    <div class="stat-card stat-amber">
+      <div class="stat-icon"><i class="bi bi-speedometer2"></i></div>
+      <div class="stat-body">
+        <span class="stat-label">Risk Score</span>
+        <span class="stat-value"><%= riskScore %><span class="stat-unit">/100</span></span>
+        <div class="risk-bar-wrap">
+          <div class="risk-bar" style="width: <%= riskScore %>%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card stat-green">
+      <div class="stat-icon"><i class="bi bi-shield-check"></i></div>
+      <div class="stat-body">
+        <span class="stat-label">Detection Rate</span>
+        <span class="stat-value">99.4<span class="stat-unit">%</span></span>
+        <span class="stat-delta positive"><i class="bi bi-arrow-up-short"></i>0.2% improvement</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Charts Row -->
+  <div class="charts-grid">
+
+    <div class="chart-card wide">
+      <div class="chart-header">
+        <div>
+          <h3 class="chart-title">Fraud Trend</h3>
+          <p class="chart-sub">Monthly fraud case volume · 2024</p>
+        </div>
+        <span class="chart-badge red">High Activity</span>
+      </div>
+      <div class="chart-body">
+        <canvas id="lineChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <div>
+          <h3 class="chart-title">Transaction Split</h3>
+          <p class="chart-sub">Safe vs. risky breakdown</p>
+        </div>
+      </div>
+      <div class="chart-body chart-body-pie">
+        <canvas id="pieChart"></canvas>
+      </div>
+      <div class="pie-legend">
+        <span class="legend-item safe"><span></span>Safe (<%= safeCount.toLocaleString() %>)</span>
+        <span class="legend-item risky"><span></span>Risky (<%= fraudCount.toLocaleString() %>)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Recent Alerts Table -->
+  <div class="table-card">
+    <div class="table-header">
+      <div>
+        <h3 class="chart-title">Recent Alerts</h3>
+        <p class="chart-sub">Latest flagged transactions</p>
+      </div>
+      <button class="btn-export"><i class="bi bi-download"></i> Export</button>
+    </div>
+    <div class="table-responsive">
+      <table class="risk-table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Threat Type</th>
+            <th>Amount</th>
+            <th>Risk Level</th>
+            <th>Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentAlerts.forEach(alert => { %>
+          <tr>
+            <td class="tx-id"><%= alert.id %></td>
+            <td><%= alert.type %></td>
+            <td class="tx-amount"><%= alert.amount %></td>
+            <td>
+              <span class="risk-badge risk-<%= alert.risk.toLowerCase() %>">
+                <%= alert.risk %>
+              </span>
+            </td>
+            <td class="tx-time"><i class="bi bi-clock"></i> <%= alert.time %></td>
+            <td>
+              <button class="btn-review">Review</button>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const chartMonths    = <%- JSON.stringify(months) %>;
+  const chartFraudData = <%- JSON.stringify(fraudTrend) %>;
+  const chartSafe      = <%= safeCount %>;
+  const chartFraud     = <%= fraudCount %>;
+</script>
+
+<%- include('partials/footer') %>
