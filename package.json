@@ -14,5 +14,16 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  }
+  },
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RajBhokare/E-Commerce-Group-Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RajBhokare/E-Commerce-Group-Project/issues"
+  },
+  "homepage": "https://github.com/RajBhokare/E-Commerce-Group-Project#readme"
 }
