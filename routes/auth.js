@@ -1,30 +1,15 @@
-import { Router } from 'express';
+import express from 'express';
+import * as authController from '../controller/authController.js';
 
-const router = Router();
+const router = express.Router();
 
-const CREDENTIALS = {
-  email: 'admin@riskmonitor.io',
-  password: 'secure123'
-};
+// Login page (GET)
+router.get('/login', authController.showLogin);
 
-router.get('/', (req, res) => {
-  if (req.session.user) return res.redirect('/dashboard');
-  res.render('index', { error: null });
-});
+// Process login (POST)
+router.post('/login', authController.loginUser);
 
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-
-  if (email === CREDENTIALS.email && password === CREDENTIALS.password) {
-    req.session.user = { email, name: 'Admin' };
-    return res.redirect('/dashboard');
-  }
-
-  res.render('index', { error: 'Invalid credentials. Please try again.' });
-});
-
-router.get('/logout', (req, res) => {
-  req.session.destroy(() => res.redirect('/'));
-});
+// Logout
+router.get('/logout', authController.logoutUser);
 
 export default router;
